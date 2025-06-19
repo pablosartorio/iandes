@@ -1,0 +1,21 @@
+The 5 most relevant generative models for working with text, prioritizing performance, from your provided list are:
+
+    models/gemini-2.5-pro-preview-05-06:
+        Context Window: 1 million tokens (with 2 million coming soon).
+        Reasoning: Best for complex coding, reasoning, and multimodal understanding.
+
+    models/gemini-2.0-pro-exp:
+        Context Window: 2 million tokens.
+        Reasoning: Our best model yet for coding performance and complex prompts, with strong coding performance and ability to handle complex prompts.
+
+    models/gemini-1.5-pro-latest:
+        Context Window: Standard 128,000 tokens, capable of running up to 1 million tokens in production, and tested up to 2 million tokens.
+        Reasoning: Excellent for complex reasoning and multimodal understanding.
+
+    models/gemini-2.5-flash-preview-05-20:
+        Context Window: 1 million tokens.
+        Reasoning: Best for fast performance on complex tasks, optimized for low latency and reduced cost, but still offers good performance for text generation.
+
+    models/gemini-2.0-flash-001:
+        Context Window: 1 million tokens.
+        Reasoning: Generally available with enhanced performance across most quality benchmarks, making it a strong contender for text generation.

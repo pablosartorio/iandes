@@ -1,0 +1,29 @@
+# Entradas grandes de audio/video
+01-inputs/
+temp_video.mp4
+
+# Transcripciones y resultados intermedios
+02-transcripciones/
+03-metadata/
+05-outputs/
+
+# Caché de Python
+__pycache__/
+*.py[cod]
+
+# Archivos temporales de editores
+*.swp
+*.swo
+*~
+*.bak
+
+# Archivos grandes por extensión
+*.mp4
+*.wav
+
+# Archivos del sistema
+.DS_Store
+Thumbs.db
+
+# Archivos de logs
+*.log

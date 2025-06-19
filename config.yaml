@@ -1,0 +1,29 @@
+paths:
+  # Directorios de datos
+  raw_inputs: "01-inputs"            # Datos crudos de audio/video
+  audio: "01-inputs/audio"           # Salida de utilitarios.preparaaudios
+  transcriptions: "02-transcripciones" # Salida de ingest.transcribe
+  metadata: "03-metadata"            # Salida de process.resumen
+  templates: "04-templates"          # Plantillas para deliver.llenado
+  outputs: "05-outputs"              # Documentos finales
+
+models:
+  whisper: "tiny"                               # Modelo Whisper para transcripción
+  hf_textgen: "meta-llama/Llama-3.1-8B-Instruct" # Modelo Hugging Face para resumen (engine=config)
+  gemini: "gemini-2.0-flash-001"                # Modelo Google Gemini para engine=gemini
+  ollama: "ollama-llama2"                       # Modelo Ollama local para engine=ollama
+
+prompts:
+  summary: |
+    Eres un asistente experto en resumir entrevistas técnicas.
+    Genera un resumen temático e índice de tópicos en español.
+
+processing:
+  engine: "config"  # Motor a usar para resúmenes: config (HF), ollama, gemini
+  # Cuando uses engine=config, usa models.hf_summary
+  # Cuando uses engine=ollama, usa models.ollama
+  # Cuando uses engine=gemini, usa models.gemini
+
+templates:
+  default: "default.md"  # Nombre de la plantilla por defecto en 04-templates
+
