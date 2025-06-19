@@ -26,4 +26,3 @@ processing:
 
 templates:
   default: "default.md"  # Nombre de la plantilla por defecto en 04-templates
-
