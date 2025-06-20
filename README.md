@@ -1,4 +1,4 @@
-# Herramienta para creación de un plan de acción
+# Herramienta genérica para ingesta de data, procesamiento con llms y llenado de plantillas.
 
 ## Justificación
 

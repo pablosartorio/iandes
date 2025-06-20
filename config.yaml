@@ -20,7 +20,7 @@ prompts:
 
 processing:
   engine: "config"  # Motor a usar para resúmenes: config (HF), ollama, gemini
-  # Cuando uses engine=config, usa models.hf_summary
+  # Cuando uses engine=config, usa models.hf_textgen
   # Cuando uses engine=ollama, usa models.ollama
   # Cuando uses engine=gemini, usa models.gemini
 
