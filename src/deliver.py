@@ -1,57 +1,80 @@
 #!/usr/bin/env python3
 """
-deliver.py - Módulo para el llenado de plantillas con metadata usando Google Gemini
-Este script toma los archivos JSON de metadata generados en la etapa de procesamiento,
-los carga en un contexto y completa una plantilla markdown mediante una llamada a Gemini.
+deliver.py - Módulo para el llenado de plantillas con transcripción completa, resumen y contexto usando Google Gemini
+Este script toma la transcripción completa, el resumen y un contexto estratégico, y completa una plantilla markdown mediante una llamada a Gemini.
 """
 
 import os
 import json
+from pathlib import Path
 import argparse
 from google import genai
 
-# Configura tu API key de Google Gemini a través de la variable de entorno GOOGLE_API_KEY
-client = genai.Client(api_key=os.getenv("GOOGLE_API_KEY"))
 
-
-def llenado(metadata_dir: str, template_dir: str, output_dir: str, template_name: str, model: str = None):
+def llenado(transcribe_dir: str,
+            metadata_dir: str,
+            template_dir: str,
+            output_dir: str,
+            template_name: str,
+            model: str = None,
+            strategy_name: str = "EstrategiaEscuela.md"):
     """
-    Carga metadata desde metadata_dir, lee la plantilla desde template_dir,
-    llama a Gemini para llenar la plantilla y guarda el resultado en output_dir.
+    Genera un plan de acción combinando:
+      - La transcripción completa (02-transcripciones/<stem>/<stem>.txt)
+      - El resumen (_summary.txt en metadata_dir)
+      - Una estrategia (archivo strategy_name en template_dir)
+    y usa Google Gemini para llenar la plantilla (template_name) en template_dir.
+
+    Args:
+        transcribe_dir (str): Directorio con subdirectorios de transcripciones (.txt).
+        metadata_dir (str): Directorio con archivos de resumen (_summary.txt).
+        template_dir (str): Directorio donde están las plantillas markdown.
+        output_dir (str): Directorio donde se guardarán los planes completados.
+        template_name (str): Nombre del archivo de plantilla markdown.
+        model (str): Modelo Gemini a usar (opcional).
+        strategy_name (str): Nombre del archivo de estrategia en template_dir.
     """
     # Selección de modelo
     modelo = model or os.getenv("GEMINI_MODEL", "gemini-pro-turbo")
 
-    # Cargar metadata JSON en un diccionario
-    contexto = {}
-    for fname in os.listdir(metadata_dir):
-        if fname.endswith(".json"):
-            key = os.path.splitext(fname)[0]
-            path = os.path.join(metadata_dir, fname)
-            with open(path, "r", encoding="utf-8") as f:
-                try:
-                    contexto[key] = json.load(f)
-                except json.JSONDecodeError:
-                    print(f"Advertencia: no se pudo parsear {fname}, se omite.")
+    # Leer estrategia
+    strategy_path = Path(template_dir) / strategy_name
+    if not strategy_path.exists():
+        raise FileNotFoundError(f"No se encontró el archivo de estrategia: {strategy_path}")
+    estrategia = strategy_path.read_text(encoding="utf-8")
+
+    # Buscar archivo de resumen
+    summary_files = list(Path(metadata_dir).glob("*_summary.txt"))
+    if not summary_files:
+        raise FileNotFoundError(f"No se encontraron archivos de resumen en: {metadata_dir}")
+    summary_file = summary_files[0]
+    stem = summary_file.stem.replace("_summary", "")
+    resumen = summary_file.read_text(encoding="utf-8")
+
+    # Leer transcripción completa
+    full_txt_path = Path(transcribe_dir) / stem / f"{stem}.txt"
+    if not full_txt_path.exists():
+        raise FileNotFoundError(f"No se encontró la transcripción completa en: {full_txt_path}")
+    transcripcion = full_txt_path.read_text(encoding="utf-8")
 
     # Leer plantilla
-    plantilla_path = os.path.join(template_dir, template_name)
-    if not os.path.exists(plantilla_path):
+    plantilla_path = Path(template_dir) / template_name
+    if not plantilla_path.exists():
         raise FileNotFoundError(f"No se encontró la plantilla: {plantilla_path}")
-    with open(plantilla_path, "r", encoding="utf-8") as f:
-        plantilla = f.read()
+    plantilla = plantilla_path.read_text(encoding="utf-8")
 
     # Construir prompts
-    system_prompt = (
-        "Eres un asistente que llena plantillas markdown con datos estructurados."  
-    )
+    system_prompt = "Eres un asistente que llena plantillas markdown con datos estructurados."
     user_prompt = (
-        f"Tienes los siguientes datos en JSON:\n{json.dumps(contexto, ensure_ascii=False, indent=2)}"
-        "\n\nUsa esta información para completar la siguiente plantilla markdown exactamente como está,"
-        " manteniendo el formato y reemplazando los campos necesarios:\n" + plantilla
+        f"Estrategia pedagógica:\n{estrategia}\n\n"
+        f"Transcripción completa:\n{transcripcion}\n\n"
+        f"Resumen:\n{resumen}\n\n"
+        "Usa estos datos para completar la siguiente plantilla markdown exactamente como está, manteniedo el formato:\n"
+        f"{plantilla}"
     )
 
-    # Llamada al modelo: pasa la lista de strings como contenidos
+    # Llamada a Gemini
+    client = genai.Client(api_key=os.getenv("GOOGLE_API_KEY"))
     resp = client.models.generate_content(
         model=modelo,
         contents=[system_prompt, user_prompt]
@@ -59,21 +82,23 @@ def llenado(metadata_dir: str, template_dir: str, output_dir: str, template_name
     completado = resp.text
 
     # Guardar resultado
-    os.makedirs(output_dir, exist_ok=True)
-    salida_path = os.path.join(output_dir, template_name)
-    with open(salida_path, "w", encoding="utf-8") as f:
-        f.write(completado)
-
+    Path(output_dir).mkdir(parents=True, exist_ok=True)
+    salida_path = Path(output_dir) / template_name
+    salida_path.write_text(completado, encoding="utf-8")
     print(f"✔ Plantilla completada y guardada en: {salida_path}")
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
-        description="LLena plantillas markdown con metadata usando Google Gemini."
+        description="Llena plantilla de plan de acción combinando estrategia, transcripción y resumen usando Google Gemini."
+    )
+    parser.add_argument(
+        "--transcribe_dir", required=True,
+        help="Directorio con subdirectorios de transcripciones (.txt)"
     )
     parser.add_argument(
         "--metadata_dir", required=True,
-        help="Directorio que contiene archivos JSON de metadata"
+        help="Directorio con archivos de resumen (_summary.txt)"
     )
     parser.add_argument(
         "--template_dir", required=True,
@@ -81,21 +106,26 @@ if __name__ == "__main__":
     )
     parser.add_argument(
         "--output_dir", required=True,
-        help="Directorio donde se guardarán los archivos completados"
+        help="Directorio donde se guardarán los planes completados"
     )
     parser.add_argument(
         "--template_name", required=True,
-        help="Nombre del archivo de plantilla (por ejemplo default.md)"
+        help="Nombre del archivo de plantilla (por ejemplo TemplatePlanifica.md)"
+    )
+    parser.add_argument(
+        "--strategy_name", default="EstrategiaEscuela.md",
+        help="Nombre del archivo de estrategia en template_dir"
     )
     parser.add_argument(
         "--model", help="Nombre del modelo Gemini a usar (opcional)"
     )
     args = parser.parse_args()
     llenado(
+        transcribe_dir=args.transcribe_dir,
         metadata_dir=args.metadata_dir,
         template_dir=args.template_dir,
         output_dir=args.output_dir,
         template_name=args.template_name,
-        model=args.model
+        model=args.model,
+        strategy_name=args.strategy_name
     )
-

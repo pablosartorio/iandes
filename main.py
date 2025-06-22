@@ -40,7 +40,7 @@ def main():
     process.resumen(
         transcribe_dir=config["paths"]["transcriptions"],
         metadata_dir=config["paths"]["metadata"],
-        model=config["models"]["gemini"],    # ahora sí extraemos el string correcto
+        model=config["models"]["gemini"],  
         prompt=config["prompts"]["summary"],
         engine="gemini"
     )
@@ -51,8 +51,8 @@ def main():
     #    - template_dir: directorio de plantillas (.md, .xlsx, etc.)
     #    - output_dir: dónde guardar los documentos finales
     #    - template_name: nombre de la plantilla a usar
-
     deliver.llenado(
+        transcribe_dir = config["paths"]["transcriptions"],
         metadata_dir   = config["paths"]["metadata"],
         template_dir   = config["paths"]["templates"],
         output_dir     = config["paths"]["outputs"],

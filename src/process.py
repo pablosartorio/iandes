@@ -5,13 +5,12 @@ process.py - Módulo para generar resúmenes, índices y análisis usando difere
 
 import os
 from pathlib import Path
+from transformers import pipeline
+import ollama
+from google import genai
 
-
-def resumen(transcribe_dir: str,
-             metadata_dir: str,
-             model: str,
-             prompt: str,
-             engine: str = "config"):
+# No se mantiene estado: se usa la API REST de Ollama bajo el capó
+def resumen(transcribe_dir: str, metadata_dir: str, model: str, prompt: str, engine: str = "config"):
     """
     Genera resúmenes a partir de las transcripciones en 'transcribe_dir'
     y guarda los resultados en 'metadata_dir'.
@@ -20,13 +19,10 @@ def resumen(transcribe_dir: str,
         transcribe_dir (str): Directorio con subdirectorios de transcripciones (con .txt).
         metadata_dir (str): Directorio donde se guardarán los archivos de resumen.
         model (str): Nombre o ruta del modelo a usar según el 'engine'.
-                     - 'config': modelo de Hugging Face para summarization.
-                     - 'ollama': modelo local en Ollama.
-                     - 'gemini': modelo de Google Gemini API.
         prompt (str): Prompt base para la generación de contenido.
         engine (str): Motor a usar: "config" (por defecto), "ollama" o "gemini".
     """
-    # Crear carpeta de salida si no existe
+    # Crear carpeta de salida
     os.makedirs(metadata_dir, exist_ok=True)
 
     # Iterar cada subdirectorio en transcribe_dir
@@ -43,42 +39,32 @@ def resumen(transcribe_dir: str,
         text = txt_file.read_text(encoding="utf-8")
         summary = ""
 
-        # 1) Engine por defecto: Hugging Face pipeline
+        # 1) Engine por defecto: Hugging Face text-generation pipeline
         if engine.lower() == "config":
-            from transformers import pipeline
-            summarizer = pipeline("summarization", model=model)
-            result = summarizer(
-                text,
-                max_length=512,
-                min_length=100,
+            generator = pipeline("text-generation", model=model)
+            response = generator(
+                prompt + "\n" + text,
+                max_new_tokens=200,
                 do_sample=False
             )
-            summary = result[0].get("summary_text", "")
+            summary = response[0].get("generated_text", "")
 
-        # 2) Ollama local (requiere CLI 'ollama')
+        # 2) Ollama local usando la librería Python
         elif engine.lower() == "ollama":
-            import subprocess
-            cmd = [
-                "ollama", "generate", model,
-                "--prompt", prompt + "\n" + text
-            ]
             try:
-                proc = subprocess.run(
-                    cmd,
-                    stdout=subprocess.PIPE,
-                    stderr=subprocess.PIPE,
-                    text=True,
-                    check=True
+                response = ollama.generate(
+                    model=model,
+                    prompt=prompt + "\n" + text
                 )
-                summary = proc.stdout.strip()
-            except subprocess.CalledProcessError as e:
-                summary = f"Error Ollama: {e.stderr.strip()}"
+                # La respuesta puede tener 'completion' o 'choices'
+                summary = response.get("completion", 
+                    response.get("choices", [{}])[0].get("message", {}).get("content", ""))
+            except Exception as e:
+                summary = f"Error Ollama: {str(e)}"
 
-        # 3) Google Gemini API (requiere google-genai)
+        # 3) Google Gemini API
         elif engine.lower() == "gemini":
-            from google import genai
             client = genai.Client()
-            # Subir archivo de texto para contexto
             file_resp = client.files.upload(file=str(txt_file))
             resp = client.models.generate_content(
                 model=model,
@@ -94,3 +80,4 @@ def resumen(transcribe_dir: str,
         out_file = Path(metadata_dir) / f"{stem}_summary.txt"
         out_file.write_text(summary, encoding="utf-8")
         print(f"Resumen guardado: {out_file}")
+
