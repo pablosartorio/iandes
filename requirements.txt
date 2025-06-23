@@ -3,3 +3,4 @@ whisper
 transformers
 ollama
 google-generativeai
+pytest
