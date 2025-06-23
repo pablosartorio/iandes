@@ -50,6 +50,3 @@ Proponemos un flujo de trabajo que consiste básicamente en uno o varios ciclos 
 
 ## Diagrama
 ![Imágen del diagrama](documentos/diagramas/Diagrama.svg)
-
-## Advanced RAG
-![Advanced RAG diagram](documentos/diagramas/AdvancedRAG.svg)
