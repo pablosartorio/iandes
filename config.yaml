@@ -11,7 +11,7 @@ models:
   whisper: "tiny"                               # Modelo Whisper para transcripción
   hf_textgen: "meta-llama/Llama-3.1-8B-Instruct" # Modelo Hugging Face para resumen (engine=config)
   gemini: "gemini-2.0-flash-001"                # Modelo Google Gemini para engine=gemini
-  ollama: "ollama-llama2"                       # Modelo Ollama local para engine=ollama
+  ollama: "deepseek-r1"                         # Modelo Ollama local para engine=ollama
 
 prompts:
   summary: |
@@ -19,10 +19,10 @@ prompts:
     Genera un resumen temático e índice de tópicos en español.
 
 processing:
-  engine: "config"  # Motor a usar para resúmenes: config (HF), ollama, gemini
+  engine: "gemini"  # Motor a usar para resúmenes: config (HF), ollama, gemini
   # Cuando uses engine=config, usa models.hf_textgen
   # Cuando uses engine=ollama, usa models.ollama
   # Cuando uses engine=gemini, usa models.gemini
 
 templates:
-  default: "default.md"  # Nombre de la plantilla por defecto en 04-templates
+    default: "default.md"  # Nombre de la plantilla por defecto en 04-templates

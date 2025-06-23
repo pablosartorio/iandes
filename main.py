@@ -37,14 +37,15 @@ def main():
     #    - metadata_dir: destino para resúmenes y metadata
     #    - model: modelo LLM para resumen
     #    - prompt: prompt base para el LLM
+    engine = config["processing"]["engine"]             # p.ej. "gemini", "ollama" o "config"
+    model  = config["models"][engine]                   # p.ej. config["models"]["gemini"]
     process.resumen(
         transcribe_dir=config["paths"]["transcriptions"],
         metadata_dir=config["paths"]["metadata"],
-        model=config["models"]["gemini"],  
+        model=model,
         prompt=config["prompts"]["summary"],
-        engine="gemini"
+        engine=engine
     )
-
 
     # 5. Llenar plantillas con la metadata generada
     #    - metadata_dir: fuente de datos
@@ -57,7 +58,8 @@ def main():
         template_dir   = config["paths"]["templates"],
         output_dir     = config["paths"]["outputs"],
         template_name  = config["templates"]["default"],
-        model          = config["models"]["gemini"]
+        model          = model,
+        strategy_name  = "EstrategiaEscuela.md"
     )
 
     print("Pipeline completado exitosamente.")

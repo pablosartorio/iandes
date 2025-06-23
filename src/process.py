@@ -9,7 +9,6 @@ from transformers import pipeline
 import ollama
 from google import genai
 
-# No se mantiene estado: se usa la API REST de Ollama bajo el capó
 def resumen(transcribe_dir: str, metadata_dir: str, model: str, prompt: str, engine: str = "config"):
     """
     Genera resúmenes a partir de las transcripciones en 'transcribe_dir'
