@@ -1,96 +1,59 @@
-### **Plan de Retención y Transferencia (KT\&R)**
+# 📘 Template de Planificación de Clase (Educación Técnico-Profesional)
 
-**Nombre:**
-
-**Abstract de perfil:**
+Este template está diseñado para planificar clases en base a transcripciones de charlas y el diseño curricular técnico-profesional.
 
 ---
 
-#### **1 | Conocimiento crítico en riesgo** 
+## 🧩 Planificación de Clase
 
-| Dominio | Justificación de criticidad | Evidencia de las entrevistas |
-| :---: | :---: | :---: |
+**1. Título de la clase**  
+*(Nombre tentativo que identifique el foco de trabajo)*
+
+**2. Área / Espacio Curricular**  
+*(Ej. Biología, Historia, Educación Tecnológica)*
+
+**3. Eje o contenido curricular vinculado**  
+*(Copiar o resumir el contenido del diseño curricular que se aborda)*
+
+**4. Idea central o concepto clave extraído de la transcripción**  
+*(¿Qué idea potente, conflicto o experiencia de la charla puede servir de disparador o anclaje?)*
+
+**5. Propósito de la clase**  
+*(¿Para qué se propone esta clase? ¿Qué se espera que logren los estudiantes?)*
+
+**6. Actividades propuestas**  
+*(Secuencia breve de actividades: inicio – desarrollo – cierre. Pueden incluir el uso de fragmentos de la charla.)*
+
+**7. Competencias / capacidades a desarrollar**  
+*(Según el diseño curricular: analizar, argumentar, modelizar, empatizar, etc.)*
+
+**8. Materiales o recursos sugeridos**  
+*(Fragmento de la transcripción, imágenes, videos, objetos, otros textos)*
+
+**9. Evaluación prevista**  
+*(¿Qué evidencias se recogerán del proceso de aprendizaje? ¿Cómo?)*
+
+**10. Observaciones o notas para el/la docente**  
+*(Dificultades previstas, oportunidades didácticas, relaciones con otras clases, etc.)*
 
 ---
 
-#### **2 | Sucesores y roles de aprendizaje**
+## 🧰 Banco de Herramientas y Actividades Sugeridas
 
-| Rol futuro | Candidato principal | Estado actual | Brecha identificada |
-| :---: | :---: | :---: | :---: |
+| Nº | Técnica / Actividad | Competencias desarrolladas | Recursos / Materiales | Evaluación |
+|----|---------------------|----------------------------|------------------------|------------|
+| 1 | **Análisis de caso real** | Pensamiento crítico, resolución de problemas, argumentación | Fragmento textual de la charla, guías de preguntas | Informe escrito o presentación grupal |
+| 2 | **Aprendizaje Basado en Proyectos (ABP)** | Trabajo colaborativo, planificación, ejecución técnica | Transcripción, herramientas de taller, planilla de gestión | Producto final, rúbrica, reflexión |
+| 3 | **Mapa conceptual colectivo** | Abstracción, síntesis, conexión de ideas | Papel afiche / Jamboard / Miro | Coevaluación + validación docente |
+| 4 | **Diseño de prototipo o maqueta** | Modelización, diseño técnico, trabajo manual o digital | Materiales de construcción, software de simulación | Evaluación del diseño y defensa oral |
+| 5 | **Role play de dilemas éticos/técnicos** | Empatía, toma de decisiones, comunicación | Guión basado en la charla, espacio escénico | Evaluación cualitativa y autoevaluación |
+| 6 | **Debate académico guiado** | Argumentación, análisis, escucha activa | Pregunta generadora, textos complementarios | Participación, calidad de argumentos |
+| 7 | **Taller de análisis tecnológico** | Pensamiento sistémico, conciencia ambiental | Infografías técnicas, videos, fichas de evaluación | Guía de análisis y entrega individual |
+| 8 | **Línea de tiempo de evolución tecnológica** | Contextualización histórica | Plantilla editable, referencias cronológicas | Producto visual y explicación oral |
+| 9 | **Simulación con software** | Uso de TIC, razonamiento lógico, precisión técnica | Simuladores como Tinkercad, Proteus, etc. | Registro de resultados y reporte digital |
+|10 | **Bitácora de aprendizaje / diario reflexivo** | Metacognición, escritura, autoevaluación | Cuaderno o documento compartido | Evaluación continua y seguimiento docente |
 
 ---
 
-#### **3 | Acciones de transferencia o explicitación**
-
-| Tipo IAEA | Acción concreta | Responsable |
-| :---: | :---: | :---: |
-
----
-
-#### **4 | Riesgos y mitigaciones**
-
-| Riesgo | Mitigación |
-| :---: | :---: |
-
-### **Etapa de “llenado de planilla” — paso a paso (alto nivel)**
-
-1. **Transcribe cada audio y etiqueta los pasajes**
-
-   * Pasa los audios por Whisper; guarda la transcripción con marcas de tiempo.
-
-   * Asigna un identificador único a cada entrevista (ej.: ENT-001) para que después puedas rastrear la fuente de cada dato.
-
-2. **Segmenta y limpia la transcripción**
-
-   * Divide el texto en fragmentos breves (500–800 palabras) y elimina ruido (“eh…”, repeticiones, chistes internos).
-
-   * Mantén los timestamps; serán la “dirección” que el modelo colocará como evidencia.
-
-3. **Diseña cuatro prompts—uno por bloque de la plantilla KT\&R**
-
-   * Prompt 1: Conocimiento crítico (Dominio, Justificación, Evidencias).
-
-   * Prompt 2: Sucesores y roles.
-
-   * Prompt 3: Acciones de transferencia.
-
-   * Prompt 4: Riesgos y mitigaciones.  
-      Cada prompt incluye:  
-      *a)* una breve instrucción en español,  
-      *b)* el fragmento de texto recuperado que parece relevante,  
-      *c)* el formato JSON estricto que debe devolver.
-
-4. **Orquesta la extracción automática**
-
-   * Un pequeño script recorre las entrevistas:
-
-     1. Busca los fragmentos más relacionados con cada bloque (palabras clave o embeddings).
-
-     2. Llama al LLM con el prompt correspondiente.
-
-     3. Vuelca la respuesta en la plantilla, junto a la cita y un campo “Confianza”.
-
-   * Guarda cada plantilla como un archivo separado (JSON o Excel) con el mismo ID de entrevista.
-
-5. **Validación rápida**
-
-   * Un experto revisa la plantilla: marca ✔ si el dato es correcto y ✖ si debe corregirse.
-
-   * Si hay inconsistencias de nombres entre bloques, ejecuta un segundo prompt de “reconciliación” para que el LLM unifique términos.
-
-6. **Exportación y respaldo**
-
-   * Convierte la plantilla validada a PDF o al formato que use tu repositorio de conocimiento.
-
-   * Archiva el audio, la transcripción y la planilla final en la misma carpeta o sistema de versionado.
-
-**Carga de trabajo aproximada**
-
-* Configurar los prompts y el script: **1–2 días** de un analista.
-
-* Ejecución automática por entrevista: **30 min** (tiempo de máquina).
-
-* Revisión humana por entrevista: **40–60 min**.
-
-Con este flujo, todo el esfuerzo manual se concentra en una revisión liviana; el resto lo hace el modelo de forma reproducible y trazable.
+✅ Este template y el banco de actividades están pensados para ser adaptados según el contenido extraído de entrevistas o charlas, con el objetivo de fortalecer la pertinencia, el interés y la profundidad en la enseñanza técnico-profesional.
 

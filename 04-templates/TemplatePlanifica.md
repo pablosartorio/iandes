@@ -1,4 +1,4 @@
-# 📘 Template de Planificación de Clase (Educación Técnico-Profesional)
+:q# 📘 Template de Planificación de Clase (Educación Técnico-Profesional)
 
 Este template está diseñado para planificar clases en base a transcripciones de charlas y el diseño curricular técnico-profesional.
 
