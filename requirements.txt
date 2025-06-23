@@ -1,0 +1,6 @@
+pyyaml
+whisper
+transformers
+ollama
+google-generativeai
+pytest
