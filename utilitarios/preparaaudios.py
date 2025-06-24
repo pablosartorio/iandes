@@ -23,7 +23,7 @@ def preparaaudios(input_dir: str, audio_dir: str):
     audio_dir.mkdir(parents=True, exist_ok=True)
 
     # Extensiones soportadas para conversión
-    extensiones = [".mp4", ".mov", ".mkv", ".ogg", ".mp3", ".wav"]
+    extensiones = [".mp4", ".mov", ".mkv", ".ogg", ".mp3", ".wav", "webp"]
 
     # Recorrer todos los archivos en input_dir, excepto la carpeta de audio salida
     for root, dirs, files in os.walk(input_dir):
