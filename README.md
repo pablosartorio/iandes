@@ -2,7 +2,7 @@
 
 ## Justificación
 
-- Oportundad de atender una necesidad. Ejemplo: pérdida de conocimiento crítico por jubilación o retiro de personal altamente calificado (expertos).
+- Oportundad de atender una necesidad: pérdida de conocimiento crítico por jubilación o retiro de personal altamente calificado (expertos).
 - Falta de mano de obra para realizar recopilación de información, desgrabado de entrevistas y diseño de planes de acción para captura y transferencia de conocimiento crítico.
 - Potencialidad del mismo pipeline (Ingest - Process - Deliver)  para disponibilizar información relacionada a otra información disponible actualmente pero no estructurada o integrada a procesos (sitematizada). 
 
