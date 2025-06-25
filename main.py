@@ -37,8 +37,8 @@ def main():
     #    - metadata_dir: destino para resúmenes y metadata
     #    - model: modelo LLM para resumen
     #    - prompt: prompt base para el LLM
-    engine = config["processing"]["engine"]             # p.ej. "gemini", "ollama" o "config"
-    model  = config["models"][engine]                   # p.ej. config["models"]["gemini"]
+    engine = config["processing"]["engine"]            
+    model  = config["models"][engine]                  
     process.resumen(
         transcribe_dir=config["paths"]["transcriptions"],
         metadata_dir=config["paths"]["metadata"],
@@ -59,6 +59,7 @@ def main():
         output_dir     = config["paths"]["outputs"],
         template_name  = config["templates"]["default"],
         model          = model,
+        engine         = engine,
         strategy_name  = "EstrategiaEscuela.md"
     )
 

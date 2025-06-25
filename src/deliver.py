@@ -8,6 +8,7 @@ import os
 import json
 from pathlib import Path
 import argparse
+import requests
 from google import genai
 
 
@@ -17,6 +18,7 @@ def llenado(transcribe_dir: str,
             output_dir: str,
             template_name: str,
             model: str = None,
+            engine: str = "gemini",
             strategy_name: str = "EstrategiaEscuela.md"):
     """
     Genera un plan de acción combinando:
@@ -73,13 +75,35 @@ def llenado(transcribe_dir: str,
         f"{plantilla}"
     )
 
-    # Llamada a Gemini
-    client = genai.Client(api_key=os.getenv("GOOGLE_API_KEY"))
-    resp = client.models.generate_content(
-        model=modelo,
-        contents=[system_prompt, user_prompt]
-    )
-    completado = resp.text
+    if engine == "ollama":
+        url = "http://localhost:11434/api/generate"
+        headers = {"Content-Type": "application/json"}
+        prompt_text = system_prompt + "\n\n" + user_prompt
+        payload = {
+            "model": f"{modelo}:latest",
+            "prompt": prompt_text,
+            "stream": False
+        }
+        r = requests.post(url, headers=headers, json=payload)
+        r.raise_for_status()
+        data = r.json()
+        # Ahora debería estar en data["response"]
+        completado = data.get("response") or data.get("results", [{}])[0].get("completion")
+    else:
+        # Sigue usando Google GenAI
+        client = genai.Client(api_key=os.getenv("GOOGLE_API_KEY"))
+        resp = client.models.generate_content(
+            model=modelo,
+            contents=[system_prompt, user_prompt]
+        )
+        completado = resp.text
+#    # Llamada a Gemini
+#    client = genai.Client(api_key=os.getenv("GOOGLE_API_KEY"))
+#    resp = client.models.generate_content(
+#        model=modelo,
+#        contents=[system_prompt, user_prompt]
+#    )
+#    completado = resp.text
 
     # Guardar resultado
     Path(output_dir).mkdir(parents=True, exist_ok=True)
