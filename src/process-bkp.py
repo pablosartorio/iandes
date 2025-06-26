@@ -9,35 +9,6 @@ from transformers import pipeline
 import ollama
 from google import genai
 
-# ────────────── NUEVAS IMPORTACIONES ──────────────
-import requests
-
-# URL de tu API de resúmenes remota
-SUMMARIZER_URL = "http://localhost:8314/generate"
-
-def summarize_with_remote(
-    text: str,
-    model_id: str,
-    prompt_template: str,
-    max_tokens: int = 200
-) -> str:
-    """
-    Llama al servidor remoto vía HTTP para generar el resumen.
-    """
-    files = {
-        "doc": ("transcript.txt", text.encode("utf-8"), "text/plain")
-    }
-    data = {
-        "model_id": model_id,
-        "prompt_template": prompt_template,
-        "max_new_tokens": str(max_tokens),
-    }
-    resp = requests.post(SUMMARIZER_URL, files=files, data=data)
-    resp.raise_for_status()
-    return resp.text.strip()
-# ────────────────────────────────────────────────────
-
-
 def resumen(transcribe_dir: str, metadata_dir: str, model: str, prompt: str, engine: str = "config"):
     """
     Genera resúmenes a partir de las transcripciones en 'transcribe_dir'
@@ -67,17 +38,15 @@ def resumen(transcribe_dir: str, metadata_dir: str, model: str, prompt: str, eng
         text = txt_file.read_text(encoding="utf-8")
         summary = ""
 
-        # 1) Engine por defecto: llama al servidor remoto
+        # 1) Engine por defecto: Hugging Face text-generation pipeline
         if engine.lower() == "config":
-            try:
-                summary = summarize_with_remote(
-                    text=text,
-                    model_id=model,
-                    prompt_template=prompt,
-                    max_tokens=200
-                )
-            except Exception as e:
-                summary = f"Error al llamar al remote summarizer: {e}"
+            generator = pipeline("text-generation", model=model)
+            response = generator(
+                prompt + "\n" + text,
+                max_new_tokens=200,
+                do_sample=False
+            )
+            summary = response[0].get("generated_text", "")
 
         # 2) Ollama local usando la librería Python
         elif engine.lower() == "ollama":
@@ -89,7 +58,7 @@ def resumen(transcribe_dir: str, metadata_dir: str, model: str, prompt: str, eng
                 summary = response.get("completion", 
                     response.get("choices", [{}])[0].get("message", {}).get("content", ""))
             except Exception as e:
-                summary = f"Error Ollama: {e}"
+                summary = f"Error Ollama: {str(e)}"
 
         # 3) Google Gemini API
         elif engine.lower() == "gemini":

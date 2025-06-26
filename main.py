@@ -32,13 +32,20 @@ def main():
         model=config["models"]["whisper"]
     )
 
+    ## -----------------------------------------------------------
+    ## Éstas dos variables quedan definidas para process y deliver.
+    ## Si quiero usar distintas hay que cambiar esto.
+    engine = config["processing"]["engine"]            
+#pfs este es el que va, modificar yaml para arreglarlo    model  = config["models"][engine]                  
+    model  = config["models"]["hf_textgen"]                  
+    ## ----------------------------------------------------------
+
+
     # 4. Procesar transcripciones: generar resúmenes, índices, análisis
     #    - transcribe_dir: donde buscar archivos transcritos
     #    - metadata_dir: destino para resúmenes y metadata
     #    - model: modelo LLM para resumen
     #    - prompt: prompt base para el LLM
-    engine = config["processing"]["engine"]            
-    model  = config["models"][engine]                  
     process.resumen(
         transcribe_dir=config["paths"]["transcriptions"],
         metadata_dir=config["paths"]["metadata"],

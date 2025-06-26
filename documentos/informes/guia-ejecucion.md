@@ -5,28 +5,32 @@ Este documento explica cómo reproducir el flujo completo de **Ingest - Process 
 ## Instalación de dependencias
 
 1. Instalar Python 3.10 o superior.
-2. Ejecutar:
+2. Ejecutar (yo lo hago dentro de un entorno conda):
 
 ```bash
 python -m pip install -r requirements.txt
 ```
-
 ## Ejecución rápida
 
 Con las carpetas definidas en `config.yaml` se puede ejecutar el pipeline con:
 
-```bash
-bash scripts/run_pipeline.sh
-```
+`python main.py` que orquesta la preparación de audios, la transcripción con Whisper, el resumen y el llenado de plantillas.
 
-El script invoca `python main.py` que orquesta la preparación de audios, la transcripción con Whisper, el resumen y el llenado de plantillas con Gemini.
+## Server LLM con Llama
 
-## Pruebas automáticas
+En caso de usar la opción que le pega al server llm con llama via api (no ollama que es interno ni gemini) hay que setear el server. En este caso estamos e nabu... en ccad.unc.edu.ar.
 
-Para validar que los módulos principales se integran correctamente, ejecute:
+Recordatorio para mi:
 
-```bash
-pytest
-```
-
-Esto carga la configuración y verifica que `main.py` llama a cada etapa del proceso.
+[en server]
+1. conda activate rag_new
+2. uvicorn server-nabu:app --host 0.0.0.0 --port 8314
+[en local]
+1. ssh -N -L 8314:localhost:8314 nabu
+uvicorn server-nabu:app --host 0.0.0.0 --port 8314
+[en local]
+1. ssh -N -L 8314:localhost:8314 nabu
+uvicorn server-nabu:app --host 0.0.0.0 --port 8314
+[en local]
+1. ssh -N -L 8314:localhost:8314 nabu
+2. de ahí se puede testear con curl o ya se puede ejecutar main.py normal

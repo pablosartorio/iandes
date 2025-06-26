@@ -1,35 +1,31 @@
 #!/usr/bin/env python3
 """
-deliver.py - Módulo para el llenado de plantillas con transcripción completa, resumen y contexto usando Google Gemini u otros motores.
-Este script toma la transcripción completa, el resumen y un contexto estratégico, y completa una plantilla markdown mediante una llamada a Gemini, Ollama o al servidor remoto.
+deliver.py - Módulo para el llenado de plantillas con transcripción completa, resumen y contexto usando Google Gemini
+Este script toma la transcripción completa, el resumen y un contexto estratégico, y completa una plantilla markdown mediante una llamada a Gemini.
 """
 
 import os
+import json
 from pathlib import Path
 import argparse
 import requests
 from google import genai
 
-# Importar la función de llamada remota para combinar datos
-from src.process import summarize_with_remote
 
-
-def llenado(
-    transcribe_dir: str,
-    metadata_dir: str,
-    template_dir: str,
-    output_dir: str,
-    template_name: str,
-    model: str = None,
-    engine: str = "gemini",
-    strategy_name: str = "EstrategiaEscuela.md"
-):
+def llenado(transcribe_dir: str,
+            metadata_dir: str,
+            template_dir: str,
+            output_dir: str,
+            template_name: str,
+            model: str = None,
+            engine: str = "gemini",
+            strategy_name: str = "EstrategiaEscuela.md"):
     """
     Genera un plan de acción combinando:
       - La transcripción completa (02-transcripciones/<stem>/<stem>.txt)
       - El resumen (_summary.txt en metadata_dir)
       - Una estrategia (archivo strategy_name en template_dir)
-    y usa distintos motores para llenar la plantilla markdown (template_name) en template_dir.
+    y usa Google Gemini para llenar la plantilla (template_name) en template_dir.
 
     Args:
         transcribe_dir (str): Directorio con subdirectorios de transcripciones (.txt).
@@ -37,14 +33,13 @@ def llenado(
         template_dir (str): Directorio donde están las plantillas markdown.
         output_dir (str): Directorio donde se guardarán los planes completados.
         template_name (str): Nombre del archivo de plantilla markdown.
-        model (str): Nombre del modelo a usar (depende del engine).
-        engine (str): Motor a usar: 'ollama', 'gemini' o 'config'.
+        model (str): Modelo Gemini a usar (opcional).
         strategy_name (str): Nombre del archivo de estrategia en template_dir.
     """
-    # Modelo a usar
+    # Selección de modelo
     modelo = model or os.getenv("GEMINI_MODEL", "gemini-pro-turbo")
 
-    # Leer estrategia pedagógica
+    # Leer estrategia
     strategy_path = Path(template_dir) / strategy_name
     if not strategy_path.exists():
         raise FileNotFoundError(f"No se encontró el archivo de estrategia: {strategy_path}")
@@ -64,37 +59,38 @@ def llenado(
         raise FileNotFoundError(f"No se encontró la transcripción completa en: {full_txt_path}")
     transcripcion = full_txt_path.read_text(encoding="utf-8")
 
-    # Leer plantilla markdown
+    # Leer plantilla
     plantilla_path = Path(template_dir) / template_name
     if not plantilla_path.exists():
         raise FileNotFoundError(f"No se encontró la plantilla: {plantilla_path}")
     plantilla = plantilla_path.read_text(encoding="utf-8")
 
-    # Construir prompts base
+    # Construir prompts
     system_prompt = "Eres un asistente que llena plantillas markdown con datos estructurados."
     user_prompt = (
         f"Estrategia pedagógica:\n{estrategia}\n\n"
         f"Transcripción completa:\n{transcripcion}\n\n"
         f"Resumen:\n{resumen}\n\n"
-        "Usa estos datos para completar la siguiente plantilla markdown exactamente como está, manteniendo el formato:\n"
+        "Usa estos datos para completar la siguiente plantilla markdown exactamente como está, manteniedo el formato:\n"
         f"{plantilla}"
     )
 
-    engine_key = engine.lower()
-    if engine_key == "ollama":
+    if engine == "ollama":
         url = "http://localhost:11434/api/generate"
         headers = {"Content-Type": "application/json"}
+        prompt_text = system_prompt + "\n\n" + user_prompt
         payload = {
             "model": f"{modelo}:latest",
-            "prompt": system_prompt + "\n\n" + user_prompt,
+            "prompt": prompt_text,
             "stream": False
         }
         r = requests.post(url, headers=headers, json=payload)
         r.raise_for_status()
         data = r.json()
+        # Ahora debería estar en data["response"]
         completado = data.get("response") or data.get("results", [{}])[0].get("completion")
-
-    elif engine_key == "gemini":
+    else:
+        # Sigue usando Google GenAI
         client = genai.Client(api_key=os.getenv("GOOGLE_API_KEY"))
         resp = client.models.generate_content(
             model=modelo,
@@ -102,31 +98,16 @@ def llenado(
         )
         completado = resp.text
 
-    elif engine_key == "config":
-        # Llamar al servidor remoto para combinar datos y completar plantilla
-        full_template = system_prompt + "\n\n" + user_prompt
-        try:
-            completado = summarize_with_remote(
-                text=full_template,
-                model_id=modelo,
-                prompt_template=full_template,
-                max_tokens=1024
-            )
-        except Exception as e:
-            completado = f"Error al llamar al servidor remoto: {str(e)}"
-
-    else:
-        raise ValueError(f"Engine no soportado: {engine}")
-
-    # Guardar resultado final
+    # Guardar resultado
     Path(output_dir).mkdir(parents=True, exist_ok=True)
     salida_path = Path(output_dir) / template_name
     salida_path.write_text(completado, encoding="utf-8")
     print(f"✔ Plantilla completada y guardada en: {salida_path}")
 
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
-        description="Llena plantilla de plan de acción combinando estrategia, transcripción y resumen usando varios motores."
+        description="Llena plantilla de plan de acción combinando estrategia, transcripción y resumen usando Google Gemini."
     )
     parser.add_argument(
         "--transcribe_dir", required=True,
@@ -153,7 +134,7 @@ if __name__ == "__main__":
         help="Nombre del archivo de estrategia en template_dir"
     )
     parser.add_argument(
-        "--model", help="Nombre del modelo a usar (opcional)"
+        "--model", help="Nombre del modelo Gemini a usar (opcional)"
     )
     args = parser.parse_args()
     llenado(
@@ -163,7 +144,5 @@ if __name__ == "__main__":
         output_dir=args.output_dir,
         template_name=args.template_name,
         model=args.model,
-        engine=args.engine if hasattr(args, 'engine') else 'gemini',
         strategy_name=args.strategy_name
     )
-
