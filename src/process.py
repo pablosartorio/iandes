@@ -8,12 +8,11 @@ from pathlib import Path
 from transformers import pipeline
 import ollama
 from google import genai
-
-# ────────────── NUEVAS IMPORTACIONES ──────────────
 import requests
 
 # URL de tu API de resúmenes remota
 SUMMARIZER_URL = "http://localhost:8314/generate"
+# pfs mandar ésto a config.yaml
 
 def summarize_with_remote(
     text: str,
@@ -35,10 +34,9 @@ def summarize_with_remote(
     resp = requests.post(SUMMARIZER_URL, files=files, data=data)
     resp.raise_for_status()
     return resp.text.strip()
-# ────────────────────────────────────────────────────
 
 
-def resumen(transcribe_dir: str, metadata_dir: str, model: str, prompt: str, engine: str = "config"):
+def resumen(transcribe_dir: str, metadata_dir: str, model: str, prompt: str, engine: str):
     """
     Genera resúmenes a partir de las transcripciones en 'transcribe_dir'
     y guarda los resultados en 'metadata_dir', pero solo si aún no existen.
@@ -68,7 +66,7 @@ def resumen(transcribe_dir: str, metadata_dir: str, model: str, prompt: str, eng
         summary = ""
 
         # 1) Engine por defecto: llama al servidor remoto
-        if engine.lower() == "config":
+        if engine.lower() == "hf_textgen":
             try:
                 summary = summarize_with_remote(
                     text=text,

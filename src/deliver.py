@@ -12,7 +12,8 @@ from google import genai
 
 # Importar la función de llamada remota para combinar datos
 from src.process import summarize_with_remote
-
+# pfs no llamar una función de otro módulo que no tiene nada que ver. Definir ésta función en otro lado
+# además no es summarizer, es text_gen
 
 def llenado(
     transcribe_dir: str,
@@ -20,9 +21,10 @@ def llenado(
     template_dir: str,
     output_dir: str,
     template_name: str,
-    model: str = None,
-    engine: str = "gemini",
-    strategy_name: str = "EstrategiaEscuela.md"
+    model: str,
+#pfs    model: str = None,
+    engine: str,
+    strategy_name: str
 ):
     """
     Genera un plan de acción combinando:
@@ -38,13 +40,13 @@ def llenado(
         output_dir (str): Directorio donde se guardarán los planes completados.
         template_name (str): Nombre del archivo de plantilla markdown.
         model (str): Nombre del modelo a usar (depende del engine).
-        engine (str): Motor a usar: 'ollama', 'gemini' o 'config'.
+        engine (str): Motor a usar: 'ollama', 'gemini' o 'hf_huggingface'.
         strategy_name (str): Nombre del archivo de estrategia en template_dir.
     """
     # Modelo a usar
-    modelo = model or os.getenv("GEMINI_MODEL", "gemini-pro-turbo")
+    modelo = model 
 
-    # Leer estrategia pedagógica
+    # Leer estrategia -- pfs -- renombrar estrategia a contexto o algo así
     strategy_path = Path(template_dir) / strategy_name
     if not strategy_path.exists():
         raise FileNotFoundError(f"No se encontró el archivo de estrategia: {strategy_path}")
@@ -102,7 +104,7 @@ def llenado(
         )
         completado = resp.text
 
-    elif engine_key == "config":
+    elif engine_key == "hf_textgen":
         # Llamar al servidor remoto para combinar datos y completar plantilla
         full_template = system_prompt + "\n\n" + user_prompt
         try:

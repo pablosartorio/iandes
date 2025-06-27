@@ -32,26 +32,19 @@ def main():
         model=config["models"]["whisper"]
     )
 
-    ## -----------------------------------------------------------
-    ## Éstas dos variables quedan definidas para process y deliver.
-    ## Si quiero usar distintas hay que cambiar esto.
-    engine = config["processing"]["engine"]            
-#pfs este es el que va, modificar yaml para arreglarlo    model  = config["models"][engine]                  
-    model  = config["models"]["hf_textgen"]                  
-    ## ----------------------------------------------------------
-
-
     # 4. Procesar transcripciones: generar resúmenes, índices, análisis
     #    - transcribe_dir: donde buscar archivos transcritos
     #    - metadata_dir: destino para resúmenes y metadata
     #    - model: modelo LLM para resumen
     #    - prompt: prompt base para el LLM
+    engine_process = config["processing"]["engine"]            
+    model_process  = config["models"][engine_process]                  
     process.resumen(
         transcribe_dir=config["paths"]["transcriptions"],
         metadata_dir=config["paths"]["metadata"],
-        model=model,
+        model=model_process,
         prompt=config["prompts"]["summary"],
-        engine=engine
+        engine=engine_process
     )
 
     # 5. Llenar plantillas con la metadata generada
@@ -59,15 +52,17 @@ def main():
     #    - template_dir: directorio de plantillas (.md, .xlsx, etc.)
     #    - output_dir: dónde guardar los documentos finales
     #    - template_name: nombre de la plantilla a usar
+    engine_deliver = config["deliver"]["engine"]            
+    model_deliver  = config["models"][engine_deliver]                  
     deliver.llenado(
         transcribe_dir = config["paths"]["transcriptions"],
         metadata_dir   = config["paths"]["metadata"],
         template_dir   = config["paths"]["templates"],
         output_dir     = config["paths"]["outputs"],
         template_name  = config["templates"]["default"],
-        model          = model,
-        engine         = engine,
-        strategy_name  = "EstrategiaEscuela.md"
+        model          = model_deliver,
+        engine         = engine_deliver,
+        strategy_name  = config["estrategia"]["capacita"] 
     )
 
     print("Pipeline completado exitosamente.")
