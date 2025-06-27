@@ -1,52 +1,38 @@
-# Herramienta genérica para ingesta de data, procesamiento con llms y llenado de plantillas.
+## Requisitos previos
+- Python 3.10 
+- `ffmpeg` disponible en el sistema (para la conversión de audio)
+- Clave de API de Google (`GOOGLE_API_KEY`) si se utilizará Gemini
+- Dentro del server LLM hace falta huggingface-cli login
 
-## Justificación
+### Instalar dependencias de Python con:
 
-- Oportundad de atender una necesidad: pérdida de conocimiento crítico por jubilación o retiro de personal altamente calificado (expertos).
-- Falta de mano de obra para realizar recopilación de información, desgrabado de entrevistas y diseño de planes de acción para captura y transferencia de conocimiento crítico.
-- Potencialidad del mismo pipeline (Ingest - Process - Deliver)  para disponibilizar información relacionada a otra información disponible actualmente pero no estructurada o integrada a procesos (sitematizada). 
+```bash
+python -m pip install -r requirements.txt
+```
+## Configuración
+Toda la información de rutas, modelos y prompts se centraliza, o al menos debería, en
+`config.yaml`. Los campos principales son:
 
-## Objetivo
+Ajustar valores de modelo, engine, server, prompts, etc desde acá.
 
-La hipótesis que manejamos es que el proceso de identificación, captura y transferencia de conocimiento crítico asociado a personas se puede agilizar utilizando inteligencia artificial. Sustentan ésto que:
+Todas las configuraciones toqueteables deberían estar acá,
+**si estamos tocando parámetros en main.py processing.py etc está mal**
 
-- Existe amplia variedad de registros (texto, audio, video) en distintos repositorios no catalogados, o compartimentada por proyectos y servicios.
+## Ejecución básica
 
-- Hemos verificado que la mayor parte de los grupos tienen algún mecanismo de transferencia en curso pero que no cuenta con un marco organizacional transversal y por lo tanto:
-	- si el registro y transferncia resulta exitoso es en gran parte gracias al esfuerzo individual
-	- la empresa no se beneficia, no aprende, de éstos esfuerzos individuales porque no tiene registro explícito de los mismos
-	- en caso de fracaso o desvío no se cuenta con indicadores o soporte.
+`python main.py`, hace:
+1. **Preparación de audios** (`utilitarios.preparaaudios`)
+2. **Transcripción** (`src.ingest.transcribe`)
+3. **Generación de resúmenes** (`src.process.resumen`)
+4. **Llenado de plantillas** (`src.deliver.llenado`)
 
-## Metodología
+Los resultados finales se almacenan en el directorio definido en
+`paths.outputs` que por ahora es 05-outputs
 
-Proponemos un flujo de trabajo que consiste básicamente en uno o varios ciclos de **ingesta, procesamiento y entrega** (ingest, process, deliver). El resultado final, en éste caso particular, es un *plan de acción para captura y transferencia* del conocimiento crítico de una persona en particular.
+## Estructura de directorios
 
-### Flujo de trabajo:
-
-1. Recopilación de información relacionada a la persona: documentación, grabaciones de audio y video, etc.
-
-2. Creación de una una entrevista personalizada a partir de una guía genérica para realizar entrevistas creada por gestión del concimiento (producto) y de la información recopilada y aumentada en los pasos anteriores. (Requiere auditoría de CTO). 
-
-3. Realización de entrevista y grabado de audio. (Ver posibilidad de agregar marcas de tiempo o destacados durante la grabación).
-
-4. Transcripción de la entrevista a texto plano (desgrabación).
-
-5. Procesamiento de información: resumen extractivo y abstractivo, índice temático, identificación de entidades y relaciones, complejidad léxica y tecnicismos, análisis semántico emocional, análisis de privacidad, etc.
-
-6. Llenado de planilla genérica para identificación de conocimientos críticos de la persona. Se parte de una planilla genérica estructurada (creación GeCo) y se utiliza la información recopilada en la entrevista y la anterior. (Requiere auditoría experto y CTO).
-
-7. Generación de un plan de acción particular para el experto en cuestión a partir de toda la información previa (DB + planilla) y de un paquete de herramientas y metodologías estándar provistas por GeCo. (Requiere auditoría CTO, experto y partes involucradas).
-
-## Roles y funciones
-
-* Geco: proveedor de metodología y herramientas, receptor de feedback de metodología.
-* CTO: responsable de la ejecución, receptor y dueño de los entregables, propietario de los datos.
-* Partner GeCo: ejecutor del flujo, gestor de calendario y prespuesto.
-
-## A continuación
-
-* Explicitar entregables: resumen entrevista, planilla conocimientos 
-* Definir KPIs y matriz RACI.
-
-## Diagrama
-![Imágen del diagrama](documentos/diagramas/Diagrama.svg)
+- `01-inputs/` ‒ datos crudos de audio/video
+- `02-transcripciones/` ‒ archivos generados por Whisper
+- `03-metadata/` ‒ resúmenes y metadatos
+- `04-templates/` ‒ plantillas markdown y estrategias
+- `05-outputs/` ‒ documentos finales generados

@@ -40,7 +40,7 @@ def llenado(
         output_dir (str): Directorio donde se guardarán los planes completados.
         template_name (str): Nombre del archivo de plantilla markdown.
         model (str): Nombre del modelo a usar (depende del engine).
-        engine (str): Motor a usar: 'ollama', 'gemini' o 'hf_huggingface'.
+        engine (str): Motor a usar: 'ollama', 'gemini' o 'hf_textgen'.
         strategy_name (str): Nombre del archivo de estrategia en template_dir.
     """
     # Modelo a usar
