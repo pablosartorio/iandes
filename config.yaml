@@ -20,10 +20,10 @@ prompts:
     llena la planilla                           # este hay que traerlo todavía  
 
 process:
-  engine: "ollama" 
+  engine: "gemini" 
 
 deliver:
-  engine: "ollama"
+  engine: "gemini"
 
 templates:
   default: "default.md"  
