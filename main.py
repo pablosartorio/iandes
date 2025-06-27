@@ -35,15 +35,15 @@ def main():
     # 4. Procesar transcripciones: generar resúmenes, índices, análisis
     #    - transcribe_dir: donde buscar archivos transcritos
     #    - metadata_dir: destino para resúmenes y metadata
-    #    - model: modelo LLM para resumen
+    #    - model: modelo LLM para resumen y etc.
     #    - prompt: prompt base para el LLM
-    engine_process = config["processing"]["engine"]            
+    engine_process = config["process"]["engine"]            
     model_process  = config["models"][engine_process]                  
     process.resumen(
         transcribe_dir=config["paths"]["transcriptions"],
         metadata_dir=config["paths"]["metadata"],
         model=model_process,
-        prompt=config["prompts"]["summary"],
+        prompt=config["prompts"]["resumen"],
         engine=engine_process
     )
 

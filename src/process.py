@@ -14,7 +14,7 @@ import requests
 SUMMARIZER_URL = "http://localhost:8314/generate"
 # pfs mandar ésto a config.yaml
 
-def summarize_with_remote(
+def process_with_remote(
     text: str,
     model_id: str,
     prompt_template: str,
@@ -56,7 +56,7 @@ def resumen(transcribe_dir: str, metadata_dir: str, model: str, prompt: str, eng
             continue
 
         # Definir ruta de salida
-        out_file = Path(metadata_dir) / f"{stem}_summary.txt"
+        out_file = Path(metadata_dir) / f"{stem}_resumen.txt"
         # Si ya existe el resumen, lo omitimos
         if out_file.exists():
             print(f"Resumen ya existe para '{stem}', omitiendo generación.")
@@ -68,14 +68,14 @@ def resumen(transcribe_dir: str, metadata_dir: str, model: str, prompt: str, eng
         # 1) Engine por defecto: llama al servidor remoto
         if engine.lower() == "hf_textgen":
             try:
-                summary = summarize_with_remote(
+                summary = process_with_remote(
                     text=text,
                     model_id=model,
                     prompt_template=prompt,
                     max_tokens=200
                 )
             except Exception as e:
-                summary = f"Error al llamar al remote summarizer: {e}"
+                summary = f"Error al llamar a process_with_remote: {e}"
 
         # 2) Ollama local usando la librería Python
         elif engine.lower() == "ollama":
@@ -101,7 +101,6 @@ def resumen(transcribe_dir: str, metadata_dir: str, model: str, prompt: str, eng
 
         else:
             summary = f"Engine no soportado: {engine}"
-            print(summary)
 
         # Guardar resumen
         out_file.write_text(summary, encoding="utf-8")

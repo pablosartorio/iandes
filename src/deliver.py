@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 """
-deliver.py - Módulo para el llenado de plantillas con transcripción completa, resumen y contexto usando Google Gemini u otros motores.
-Este script toma la transcripción completa, el resumen y un contexto estratégico, y completa una plantilla markdown mediante una llamada a Gemini, Ollama o al servidor remoto.
+deliver.py - Módulo para el llenado de plantillas con transcripción completa,
+resumen y contexto usando Google Gemini u otros motores.
+Este script toma la transcripción completa, el resumen y un contexto estratégico,
+y completa una plantilla markdown mediante una llamada a Gemini, Ollama o al servidor remoto.
 """
 
 import os
@@ -11,9 +13,8 @@ import requests
 from google import genai
 
 # Importar la función de llamada remota para combinar datos
-from src.process import summarize_with_remote
+from src.process import process_with_remote
 # pfs no llamar una función de otro módulo que no tiene nada que ver. Definir ésta función en otro lado
-# además no es summarizer, es text_gen
 
 def llenado(
     transcribe_dir: str,
@@ -22,20 +23,19 @@ def llenado(
     output_dir: str,
     template_name: str,
     model: str,
-#pfs    model: str = None,
     engine: str,
     strategy_name: str
 ):
     """
     Genera un plan de acción combinando:
       - La transcripción completa (02-transcripciones/<stem>/<stem>.txt)
-      - El resumen (_summary.txt en metadata_dir)
+      - El resumen (_resumen.txt en metadata_dir)
       - Una estrategia (archivo strategy_name en template_dir)
     y usa distintos motores para llenar la plantilla markdown (template_name) en template_dir.
 
     Args:
         transcribe_dir (str): Directorio con subdirectorios de transcripciones (.txt).
-        metadata_dir (str): Directorio con archivos de resumen (_summary.txt).
+        metadata_dir (str): Directorio con archivos de resumen (_resumen.txt).
         template_dir (str): Directorio donde están las plantillas markdown.
         output_dir (str): Directorio donde se guardarán los planes completados.
         template_name (str): Nombre del archivo de plantilla markdown.
@@ -44,7 +44,9 @@ def llenado(
         strategy_name (str): Nombre del archivo de estrategia en template_dir.
     """
     # Modelo a usar
-    modelo = model 
+    if not model:
+        raise ValueError("Se debe especificar un modelo con --model")
+    modelo = model
 
     # Leer estrategia -- pfs -- renombrar estrategia a contexto o algo así
     strategy_path = Path(template_dir) / strategy_name
@@ -53,11 +55,11 @@ def llenado(
     estrategia = strategy_path.read_text(encoding="utf-8")
 
     # Buscar archivo de resumen
-    summary_files = list(Path(metadata_dir).glob("*_summary.txt"))
+    summary_files = list(Path(metadata_dir).glob("*_resumen.txt"))
     if not summary_files:
         raise FileNotFoundError(f"No se encontraron archivos de resumen en: {metadata_dir}")
     summary_file = summary_files[0]
-    stem = summary_file.stem.replace("_summary", "")
+    stem = summary_file.stem.replace("_resumen", "")
     resumen = summary_file.read_text(encoding="utf-8")
 
     # Leer transcripción completa
@@ -108,7 +110,7 @@ def llenado(
         # Llamar al servidor remoto para combinar datos y completar plantilla
         full_template = system_prompt + "\n\n" + user_prompt
         try:
-            completado = summarize_with_remote(
+            completado = process_with_remote(
                 text=full_template,
                 model_id=modelo,
                 prompt_template=full_template,
@@ -136,7 +138,7 @@ if __name__ == "__main__":
     )
     parser.add_argument(
         "--metadata_dir", required=True,
-        help="Directorio con archivos de resumen (_summary.txt)"
+        help="Directorio con archivos de resumen (_resumen.txt)"
     )
     parser.add_argument(
         "--template_dir", required=True,
@@ -155,6 +157,10 @@ if __name__ == "__main__":
         help="Nombre del archivo de estrategia en template_dir"
     )
     parser.add_argument(
+        "--engine", default="gemini",
+        help="Motor a usar: 'ollama', 'gemini' o 'hf_textgen'"
+    )
+    parser.add_argument(
         "--model", help="Nombre del modelo a usar (opcional)"
     )
     args = parser.parse_args()
@@ -165,7 +171,7 @@ if __name__ == "__main__":
         output_dir=args.output_dir,
         template_name=args.template_name,
         model=args.model,
-        engine=args.engine if hasattr(args, 'engine') else 'gemini',
+        engine=args.engine,
         strategy_name=args.strategy_name
     )
 

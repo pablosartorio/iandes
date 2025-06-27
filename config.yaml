@@ -2,7 +2,7 @@ paths:
   raw_inputs: "01-inputs"            # Datos crudos de audio/video
   audio: "01-inputs/audio"           # Salida de utilitarios.preparaaudios
   transcriptions: "02-transcripciones" # Salida de ingest.transcribe
-  metadata: "03-metadata"            # Salida de process.resumen
+  metadata: "03-metadata"            # Salida de process.resumen y, a futuro, otros.
   templates: "04-templates"          # Plantillas para deliver.llenado
   outputs: "05-outputs"              # Documentos finales
 
@@ -13,13 +13,13 @@ models:
   ollama: "deepseek-r1"                         # Modelo Ollama local para engine=ollama
 
 prompts:
-  summary: 
+  resumen: 
     Eres un asistente experto en resumir entrevistas técnicas.
     Genera un resumen temático e índice de tópicos en español.
   llenado:
     llena la planilla                           # este hay que traerlo todavía  
 
-processing:
+process:
   engine: "ollama" 
 
 deliver:
