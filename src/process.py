@@ -78,16 +78,25 @@ def resumen(transcribe_dir: str, metadata_dir: str, model: str, prompt: str, eng
                 summary = f"Error al llamar a process_with_remote: {e}"
 
         # 2) Ollama local usando la librería Python
+        # elif engine.lower() == "ollama":
+        #     try:
+        #         response = ollama.generate(model=model,prompt=prompt + "\n" + text)
+        #         summary = response.get("completion",response.get("choices",[{}])[0].get("message", {}).get("content", ""))
+        #     except Exception as e:
+        #         summary = f"Error Ollama: {e}"
+        
         elif engine.lower() == "ollama":
-            try:
-                response = ollama.generate(
-                    model=model,
-                    prompt=prompt + "\n" + text
-                )
-                summary = response.get("completion", 
-                    response.get("choices", [{}])[0].get("message", {}).get("content", ""))
-            except Exception as e:
-                summary = f"Error Ollama: {e}"
+            url = "http://localhost:11434/api/generate"
+            headers = {"Content-Type": "application/json"}
+            payload = {
+                "model": f"{model}:latest",
+                "prompt": prompt + "\n\n" + text,
+                "stream": False
+            }
+            r = requests.post(url, headers=headers, json=payload)
+            r.raise_for_status()
+            data = r.json()
+            summary = data.get("response") or data.get("results", [{}])[0].get("completion")
 
         # 3) Google Gemini API
         elif engine.lower() == "gemini":

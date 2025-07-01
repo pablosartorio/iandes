@@ -1,32 +1,30 @@
 paths:
-  raw_inputs: "01-inputs"            # Datos crudos de audio/video
-  audio: "01-inputs/audio"           # Salida de utilitarios.preparaaudios
+  raw_inputs: "01-inputs" # Datos crudos de audio/video
+  audio: "01-inputs/audio" # Salida de utilitarios.preparaaudios
   transcriptions: "02-transcripciones" # Salida de ingest.transcribe
-  metadata: "03-metadata"            # Salida de process.resumen y, a futuro, otros.
-  templates: "04-templates"          # Plantillas para deliver.llenado
-  outputs: "05-outputs"              # Documentos finales
+  metadata: "03-metadata" # Salida de process.resumen y, a futuro, otros.
+  templates: "04-templates" # Plantillas para deliver.llenado
+  outputs: "05-outputs" # Documentos finales
 
 models:
-  whisper: "base"                               # Modelo Whisper para transcripción
-  hf_textgen: "meta-llama/Llama-3.1-8B-Instruct" # Modelo Hugging Face para procesamiento en general 
-  gemini: "gemini-2.0-flash-001"                # Modelo Google Gemini para engine=gemini
-  ollama: "deepseek-r1"                         # Modelo Ollama local para engine=ollama
+  whisper: "base" # Modelo Whisper para transcripción
+  hf_textgen: "meta-llama/Llama-3.1-8B-Instruct" # Modelo Hugging Face para procesamiento en general
+  gemini: "gemini-2.0-flash-001" # Modelo Google Gemini para engine=gemini
+  ollama: "deepseek-r1" # Modelo Ollama local para engine=ollama
 
 prompts:
-  resumen: 
-    Eres un asistente experto en resumir entrevistas técnicas.
+  resumen: Eres un asistente experto en resumir entrevistas técnicas.
     Genera un resumen temático e índice de tópicos en español.
-  llenado:
-    llena la planilla                           # este hay que traerlo todavía  
+  llenado: llena la planilla # este hay que traerlo todavía
 
 process:
-  engine: "gemini" 
+  engine: "ollama"
 
 deliver:
-  engine: "gemini"
+  engine: "ollama"
 
 templates:
-  default: "default.md"  
+  default: "default.md"
   jubilados: "jubilados.md"
   capacita: "capacita.md"
 

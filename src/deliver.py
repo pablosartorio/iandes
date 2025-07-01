@@ -11,10 +11,12 @@ from pathlib import Path
 import argparse
 import requests
 from google import genai
+from datetime import datetime
 
 # Importar la función de llamada remota para combinar datos
 from src.process import process_with_remote
 # pfs no llamar una función de otro módulo que no tiene nada que ver. Definir ésta función en otro lado
+
 
 def llenado(
     transcribe_dir: str,
@@ -75,12 +77,12 @@ def llenado(
     plantilla = plantilla_path.read_text(encoding="utf-8")
 
     # Construir prompts base
-    system_prompt = "Eres un asistente que llena plantillas markdown con datos estructurados."
+    system_prompt = "Eres un asistente que llena plantillas con datos estructurados."
     user_prompt = (
-        f"Estrategia pedagógica:\n{estrategia}\n\n"
-        f"Transcripción completa:\n{transcripcion}\n\n"
+        f"Estrategia:\n{estrategia}\n\n"
+        f"Transcripción:\n{transcripcion}\n\n"
         f"Resumen:\n{resumen}\n\n"
-        "Usa estos datos para completar la siguiente plantilla markdown exactamente como está, manteniendo el formato:\n"
+        "Usa estos datos para completar la siguiente plantilla exactamente como está, manteniendo el formato:\n"
         f"{plantilla}"
     )
 
@@ -89,14 +91,35 @@ def llenado(
         url = "http://localhost:11434/api/generate"
         headers = {"Content-Type": "application/json"}
         payload = {
-            "model": f"{modelo}:latest",
+            "model": f"{modelo}",
             "prompt": system_prompt + "\n\n" + user_prompt,
-            "stream": False
+            "stream": False,
+            "options": {
+            "num_predict": 512,      # deja espacio para generar 512 tokens
+            "temperature": 0.6,      # opcional: ajusta creatividad
+            "top_p": 0.95,           # opcional: nucleus sampling
+            # "stop": []             # opcional: si tu prompt incluye tokens de stop por defecto
+            }
         }
         r = requests.post(url, headers=headers, json=payload)
         r.raise_for_status()
         data = r.json()
-        completado = data.get("response") or data.get("results", [{}])[0].get("completion")
+
+        # 1) caso estándar
+        if data.get("response") is not None:
+            completado = data["response"]
+
+        # 2) si viniera en .completions[]
+        elif "completions" in data:
+            completado = data["completions"][0].get("data", "")
+
+        # 3) si viniera en .choices[]
+        elif "choices" in data:
+            completado = data["choices"][0].get("text", "")
+
+        else:
+            raise RuntimeError(f"No se encontró texto de respuesta en la respuesta de Ollama: {data}")
+
 
     elif engine_key == "gemini":
         client = genai.Client(api_key=os.getenv("GOOGLE_API_KEY"))
@@ -124,7 +147,8 @@ def llenado(
 
     # Guardar resultado final
     Path(output_dir).mkdir(parents=True, exist_ok=True)
-    salida_path = Path(output_dir) / template_name
+#    salida_path = Path(output_dir) / template_name
+    salida_path = Path(output_dir) / f"{template_name}_{datetime.now().strftime('%Y%m%d_%H%M')}.txt"
     salida_path.write_text(completado, encoding="utf-8")
     print(f"✔ Plantilla completada y guardada en: {salida_path}")
 
