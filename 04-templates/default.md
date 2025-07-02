@@ -1,59 +1,96 @@
-# 📘 Template de Planificación de Clase (Educación Técnico-Profesional)
+# **Plantilla de Plan de Transferencia de Conocimiento Crítico**
 
-Este template está diseñado para planificar clases en base a transcripciones de charlas y el diseño curricular técnico-profesional.
+## **Resumen Ejecutivo**
 
----
+* **Riesgo principal:** Indicar claramente las consecuencias de no transferir el conocimiento crítico.
 
-## 🧩 Planificación de Clase
+* **Objetivo del plan:** Definir brevemente qué se quiere lograr con la transferencia.
 
-**1. Título de la clase**  
-*(Nombre tentativo que identifique el foco de trabajo)*
+* **Horizonte temporal:** Tiempo disponible para la transferencia, considerando la fecha prevista de salida del experto.
 
-**2. Área / Espacio Curricular**  
-*(Ej. Biología, Historia, Educación Tecnológica)*
+## **Información General**
 
-**3. Eje o contenido curricular vinculado**  
-*(Copiar o resumir el contenido del diseño curricular que se aborda)*
+| Campo | Explicación para llenar |
+| ----- | ----- |
+| Nombre del empleado | Nombre completo del experto |
+| Puesto / Rol actual | Cargo actual del experto |
+| Área / Departamento | Área o departamento del experto |
+| Fecha estimada de retiro | Fecha planificada de salida o jubilación |
+| Antigüedad en la organización | Años trabajando en la organización |
+| Método de transferencia preferido | Mentoría, talleres, documentación, etc. |
+| Contacto principal (email / tel.) | Datos para contacto rápido |
 
-**4. Idea central o concepto clave extraído de la transcripción**  
-*(¿Qué idea potente, conflicto o experiencia de la charla puede servir de disparador o anclaje?)*
+## **Conocimiento Crítico**
 
-**5. Propósito de la clase**  
-*(¿Para qué se propone esta clase? ¿Qué se espera que logren los estudiantes?)*
+| Dominio | Justificación de criticidad | Evidencias | Riesgo si se pierde |
+| ----- | ----- | ----- | ----- |
+| Indicar el área específica de conocimiento | Por qué este conocimiento es esencial | Evidencias que respaldan su criticidad (entrevistas, proyectos previos, etc.) | Consecuencias negativas específicas |
 
-**6. Actividades propuestas**  
-*(Secuencia breve de actividades: inicio – desarrollo – cierre. Pueden incluir el uso de fragmentos de la charla.)*
+## **Sucesores y Brechas**
 
-**7. Competencias / capacidades a desarrollar**  
-*(Según el diseño curricular: analizar, argumentar, modelizar, empatizar, etc.)*
+| Rol futuro | Candidato | Estado actual | Brecha identificada |
+| ----- | ----- | ----- | ----- |
+| Rol específico a cubrir tras salida | Persona designada para tomar el rol | Nivel actual de conocimientos o habilidades del sucesor | Qué habilidades o conocimientos necesita desarrollar |
 
-**8. Materiales o recursos sugeridos**  
-*(Fragmento de la transcripción, imágenes, videos, objetos, otros textos)*
+## **Acciones de Transferencia**
 
-**9. Evaluación prevista**  
-*(¿Qué evidencias se recogerán del proceso de aprendizaje? ¿Cómo?)*
+| Tipo de acción | Descripción | Responsable |
+| ----- | ----- | ----- |
+| Mentoring | Sesiones de mentoría 1 a 1 | Persona responsable de gestionar |
+| Talleres | Talleres prácticos específicos | Persona que coordina la actividad |
+| Documentación | Elaboración de manuales, guías o documentos técnicos | Responsable directo de producir los documentos |
+| Rotaciones/Prácticas | Exposición práctica directa en proyectos relevantes | Encargado de coordinar y supervisar |
+| Otros métodos | Acciones adicionales relevantes | Responsable asignado |
 
-**10. Observaciones o notas para el/la docente**  
-*(Dificultades previstas, oportunidades didácticas, relaciones con otras clases, etc.)*
+## **Plan Detallado de Acciones**
 
----
+**Especificar claramente para cada acción:**
 
-## 🧰 Banco de Herramientas y Actividades Sugeridas
+* Mentor
 
-| Nº | Técnica / Actividad | Competencias desarrolladas | Recursos / Materiales | Evaluación |
-|----|---------------------|----------------------------|------------------------|------------|
-| 1 | **Análisis de caso real** | Pensamiento crítico, resolución de problemas, argumentación | Fragmento textual de la charla, guías de preguntas | Informe escrito o presentación grupal |
-| 2 | **Aprendizaje Basado en Proyectos (ABP)** | Trabajo colaborativo, planificación, ejecución técnica | Transcripción, herramientas de taller, planilla de gestión | Producto final, rúbrica, reflexión |
-| 3 | **Mapa conceptual colectivo** | Abstracción, síntesis, conexión de ideas | Papel afiche / Jamboard / Miro | Coevaluación + validación docente |
-| 4 | **Diseño de prototipo o maqueta** | Modelización, diseño técnico, trabajo manual o digital | Materiales de construcción, software de simulación | Evaluación del diseño y defensa oral |
-| 5 | **Role play de dilemas éticos/técnicos** | Empatía, toma de decisiones, comunicación | Guión basado en la charla, espacio escénico | Evaluación cualitativa y autoevaluación |
-| 6 | **Debate académico guiado** | Argumentación, análisis, escucha activa | Pregunta generadora, textos complementarios | Participación, calidad de argumentos |
-| 7 | **Taller de análisis tecnológico** | Pensamiento sistémico, conciencia ambiental | Infografías técnicas, videos, fichas de evaluación | Guía de análisis y entrega individual |
-| 8 | **Línea de tiempo de evolución tecnológica** | Contextualización histórica | Plantilla editable, referencias cronológicas | Producto visual y explicación oral |
-| 9 | **Simulación con software** | Uso de TIC, razonamiento lógico, precisión técnica | Simuladores como Tinkercad, Proteus, etc. | Registro de resultados y reporte digital |
-|10 | **Bitácora de aprendizaje / diario reflexivo** | Metacognición, escritura, autoevaluación | Cuaderno o documento compartido | Evaluación continua y seguimiento docente |
+* Participantes
 
----
+* Objetivos específicos
 
-✅ Este template y el banco de actividades están pensados para ser adaptados según el contenido extraído de entrevistas o charlas, con el objetivo de fortalecer la pertinencia, el interés y la profundidad en la enseñanza técnico-profesional.
+* Frecuencia de ejecución
+
+* Fechas clave
+
+* Responsable del seguimiento
+
+## **Entregables Esperados**
+
+Listar concretamente qué materiales o resultados tangibles se esperan al finalizar el plan:
+
+* Manuales técnicos
+
+* Guías prácticas
+
+* Procedimientos estandarizados
+
+* Otros materiales relevantes
+
+## **Recursos Necesarios**
+
+Definir qué recursos se necesitan para ejecutar el plan:
+
+* Herramientas tecnológicas
+
+* Tiempo dedicado por participantes
+
+* Presupuesto específico
+
+* Incentivos o reconocimientos para participantes
+
+## **Métricas y Seguimiento**
+
+| Indicador | Método de medición | Meta deseada | Frecuencia de medición | Responsable |
+| ----- | ----- | ----- | ----- | ----- |
+| Indicadores claros y específicos | Cómo se medirán | Valor objetivo a alcanzar | Cada cuánto se evaluará | Quién mide |
+
+## **Riesgos y Mitigaciones**
+
+| Riesgo identificado | Medida de mitigación propuesta |
+| ----- | ----- |
+| Problemas que pueden surgir durante la transferencia | Acciones previstas para reducir o evitar riesgos |
 

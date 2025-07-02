@@ -62,7 +62,7 @@ def main():
         template_name  = config["templates"]["default"],
         model          = model_deliver,
         engine         = engine_deliver,
-        strategy_name  = config["estrategia"]["capacita"] 
+        strategy_name  = config["estrategia"]["default"] 
     )
 
     print("Pipeline completado exitosamente.")
