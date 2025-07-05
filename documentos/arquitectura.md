@@ -18,7 +18,7 @@ El sistema está compuesto por:
 
 ### 1️⃣ Frontend Web
 
-- **Framework:** React / Vue / Streamlit
+- **Framework:** React
 - **Funciones:**
 
   - Formularios para subir documentos y audios.
@@ -30,7 +30,7 @@ El sistema está compuesto por:
 
 ### 2️⃣ Backend API
 
-- **Framework:** FastAPI (Python) / Flask (o alternativamente Node.js con Express).
+- **Framework:** Node.js con Express.
 
 - **Funciones:**
   - Orquesta los servicios IA.
@@ -65,7 +65,8 @@ Ambas residen inicialmente en el mismo VPS.
 
 #### c) GPU remota
 
-- RunPod, LambdaLabs, Vast.ai o AWS EC2/SageMaker con GPU.
+- Server nabuconodosor en ccad.unc.edu.ar - GPU Nvidia A10
+- Vast.ai o AWS EC2/SageMaker con GPU.
 - Para grandes lotes de embeddings, transcripciones largas o LLMs complejos.
 - Se paga sólo por uso, evitando costos fijos altos.
 
@@ -134,11 +135,11 @@ Ambas residen inicialmente en el mismo VPS.
 
 | Capa            | Tecnologías posibles             |
 | --------------- | -------------------------------- |
-| Frontend        | React, Vue, Streamlit            |
-| Backend API     | FastAPI (Python), Flask, Express |
+| Frontend        | React                            |
+| Backend API     | Express                          |
 | LLM local       | Ollama (CPU)                     |
 | LLM externo     | OpenAI, Gemini, Anthropic        |
-| GPU remota      | RunPod, LambdaLabs, Vast.ai, AWS |
+| GPU remota      | Server UNC, Vast.ai, AWS         |
 | DB relacional   | PostgreSQL                       |
 | DB vectorial    | ChromaDB                         |
 | Transcripción   | Whisper CPU / GPU                |
@@ -157,7 +158,6 @@ Ambas residen inicialmente en el mismo VPS.
 
 ## 🚀 Próximos pasos
 
-- Generar diagramas gráficos (draw\.io / Mermaid).
 - Definir métricas y logs clave.
 - Planificar escalabilidad (auto-escalado GPU, DBs gestionadas).
 
