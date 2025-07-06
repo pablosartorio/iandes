@@ -8,7 +8,6 @@ import json
 from pathlib import Path
 import whisper
 
-
 def transcribe(audio_dir: str, output_dir: str, model: str):
     """
     Transcribe todos los archivos WAV en audio_dir usando Whisper,
@@ -74,4 +73,3 @@ def format_timestamp(seconds: float) -> str:
     secs    = (millis % 60000) // 1000
     ms      = millis % 1000
     return f"{hours:02d}:{minutes:02d}:{secs:02d},{ms:03d}"
-

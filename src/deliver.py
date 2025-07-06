@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 deliver.py - Módulo para el llenado de plantillas con transcripción completa,
-resumen y contexto usando Google Gemini u otros motores.
+resumen y contexto usando Google Gemini.
 Este script toma la transcripción completa, el resumen y un contexto estratégico,
 y completa una plantilla markdown mediante una llamada a Gemini, Ollama o al servidor remoto.
 """
@@ -9,14 +9,8 @@ y completa una plantilla markdown mediante una llamada a Gemini, Ollama o al ser
 import os
 from pathlib import Path
 import argparse
-import requests
 from google import genai
 from datetime import datetime
-
-# Importar la función de llamada remota para combinar datos
-from src.process import process_with_remote
-# pfs no llamar una función de otro módulo que no tiene nada que ver. Definir ésta función en otro lado
-
 
 def llenado(
     transcribe_dir: str,
@@ -45,11 +39,6 @@ def llenado(
         engine (str): Motor a usar: 'ollama', 'gemini' o 'hf_textgen'.
         strategy_name (str): Nombre del archivo de estrategia en template_dir.
     """
-    # Modelo a usar
-    if not model:
-        raise ValueError("Se debe especificar un modelo con --model")
-    modelo = model
-
     # Leer estrategia -- pfs -- renombrar estrategia a contexto o algo así
     strategy_path = Path(template_dir) / strategy_name
     if not strategy_path.exists():
@@ -87,60 +76,13 @@ def llenado(
     )
 
     engine_key = engine.lower()
-    if engine_key == "ollama":
-        url = "http://localhost:11434/api/generate"
-        headers = {"Content-Type": "application/json"}
-        payload = {
-            "model": f"{modelo}",
-            "prompt": system_prompt + "\n\n" + user_prompt,
-            "stream": False,
-            "options": {
-            "num_predict": 512,      # deja espacio para generar 512 tokens
-            "temperature": 0.6,      # opcional: ajusta creatividad
-            "top_p": 0.95,           # opcional: nucleus sampling
-            # "stop": []             # opcional: si tu prompt incluye tokens de stop por defecto
-            }
-        }
-        r = requests.post(url, headers=headers, json=payload)
-        r.raise_for_status()
-        data = r.json()
-
-        # 1) caso estándar
-        if data.get("response") is not None:
-            completado = data["response"]
-
-        # 2) si viniera en .completions[]
-        elif "completions" in data:
-            completado = data["completions"][0].get("data", "")
-
-        # 3) si viniera en .choices[]
-        elif "choices" in data:
-            completado = data["choices"][0].get("text", "")
-
-        else:
-            raise RuntimeError(f"No se encontró texto de respuesta en la respuesta de Ollama: {data}")
-
-
-    elif engine_key == "gemini":
+    if engine_key == "gemini":
         client = genai.Client(api_key=os.getenv("GOOGLE_API_KEY"))
         resp = client.models.generate_content(
-            model=modelo,
+            model=model,
             contents=[system_prompt, user_prompt]
         )
         completado = resp.text
-
-    elif engine_key == "hf_textgen":
-        # Llamar al servidor remoto para combinar datos y completar plantilla
-        full_template = system_prompt + "\n\n" + user_prompt
-        try:
-            completado = process_with_remote(
-                text=full_template,
-                model_id=modelo,
-                prompt_template=full_template,
-                max_tokens=1024
-            )
-        except Exception as e:
-            completado = f"Error al llamar al servidor remoto: {str(e)}"
 
     else:
         raise ValueError(f"Engine no soportado: {engine}")
@@ -187,6 +129,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--model", help="Nombre del modelo a usar (opcional)"
     )
+    
     args = parser.parse_args()
     llenado(
         transcribe_dir=args.transcribe_dir,
